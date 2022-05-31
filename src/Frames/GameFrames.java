@@ -40,7 +40,7 @@ public class GameFrames extends JFrame {
         //panel.setBackground(new Color(1.0f,1.0f,1.0f,0f));
         panel.setLayout(new BorderLayout(10,10));
 
-        JLabel ueberschrift = new JLabel("Schwierigkeitsgrad");
+        JLabel ueberschrift = new JLabel("Schwierigkeitsgradee");
         ueberschrift.setFont(new Font("Arial", Font.BOLD, 50));
         ueberschrift.setHorizontalTextPosition(SwingConstants.CENTER);
         ueberschrift.setAlignmentX(CENTER_ALIGNMENT);
