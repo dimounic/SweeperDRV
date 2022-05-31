@@ -2,14 +2,13 @@ package Frames;
 
 import Panels.ImagePanel;
 
-
 import javax.swing.*;
 import java.awt.*;
 
 public class GameFrames extends JFrame {
     private static Panels.ImagePanel ImagePanel = new ImagePanel();
     private static GameFrames theInstance = null;
-    JButton buttonEasy,buttonMedium,buttonHard,buttonCustom;
+    static JButton buttonEasy,buttonMedium,buttonHard,buttonCustom;
     public GameFrames(){
         setupBasicFrame();
 
