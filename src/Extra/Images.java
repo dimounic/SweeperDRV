@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 
 import Frames.Game;
 import Panels.GameBoard;
+import Panels.MenuPanel;
 
 
 import java.awt.*;
@@ -59,7 +60,7 @@ public enum Images {
                 imageMap.put(path, scaledImage);
                 return scaledImage;
             } else if (text.equals("button")) {
-                Image scaledImage = image.getScaledInstance((int) (Game.getStWIDTH() - ((Game.getStWIDTH() - Game.getStHEIGHT()) / 1.1) * 2), ((Game.getStHEIGHT() / 2) / 5) - 20, Image.SCALE_SMOOTH);
+                Image scaledImage = image.getScaledInstance((int) (Game.getStWIDTH() - ((Game.getStWIDTH() - Game.getStHEIGHT()) / 1.0) * 2), ((Game.getStHEIGHT() / 2) / 5) - 20, Image.SCALE_SMOOTH);
                 imageMap.put(path, scaledImage);
                 return scaledImage;
             } else if (text.equals("buttonEntered")) {
