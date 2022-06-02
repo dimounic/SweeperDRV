@@ -14,6 +14,7 @@ public class Frame extends JFrame {
         setMinimumSize(new Dimension(1920,1080));
         setMaximumSize(new Dimension(1920,1080));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setLocationRelativeTo(null);
         displayHEIGHT = getHeight();
         displayWIDTH = getWidth();
