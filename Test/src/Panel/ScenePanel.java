@@ -1,5 +1,6 @@
 package Panel;
 
+import Scenes.LoadInScene;
 import Scenes.MenuScene;
 import Scenes.Scene;
 
@@ -11,7 +12,7 @@ import java.awt.event.MouseListener;
 public class ScenePanel extends JPanel implements Runnable, MouseListener {
 
 
-    static Scene activeScene = new MenuScene();
+    static Scene activeScene = new LoadInScene();
      static final long DELAY = 5;
      Thread Threadi;
 
@@ -62,12 +63,12 @@ public class ScenePanel extends JPanel implements Runnable, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        activeScene.handleClick(e);
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        activeScene.handleClick(e);
     }
 
     @Override

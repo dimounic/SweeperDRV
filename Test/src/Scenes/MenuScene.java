@@ -1,6 +1,7 @@
 package Scenes;
 
 import Extra.Images;
+import Extra.clickDaten;
 import Frames.Frame;
 import Panel.ScenePanel;
 
@@ -11,33 +12,35 @@ import java.awt.event.MouseEvent;
 public class MenuScene extends Scene {
 
 
-    private static int btSizeWidth = (Frame.getDisplayWIDTH() / 4);
-    private static int btSizeHeight = (Frame.getDisplayHEIGHT() / 3) / 3;
+    private static int btSizeWidth = (int) (381 / Frame.displayScaleX);
+    private static int btSizeHeight = (int) (100 / Frame.displayScaleY);
     private static int changeBtSizeHeight = btSizeHeight;
     private static int changeBtSizeWidth = btSizeWidth;
-    private final int btPosX = (Frame.getDisplayWIDTH() / 2) - (btSizeWidth / 2);
-    private final int btPosY = (Frame.getDisplayHEIGHT() / 2);
-    private final Dimension btStartTopLeft = new Dimension(btPosX, btPosY);
-    private final Dimension btStartDownRight = new Dimension(btPosX + btSizeWidth, btPosY + btSizeHeight);
+    private final int btPosX = (int) (774 / Frame.displayScaleX);
+    private final int btPosY = (int) (515 / Frame.displayScaleY);
+    clickDaten[] clickArray = new clickDaten[10];
     private boolean isEntered;
+
 
     @Override
     public void drawScene(Graphics g) {
         Graphics2D G2D = (Graphics2D) g;
-        G2D.drawImage(Images.BACKGROUND.image(""), 0, 0, null);
+
+        G2D.drawImage(Images.BACKGROUND.image("MenuImage"), 0, 0, null);
+
         G2D.drawImage(Images.MENUBUTTON.image("MenuButton"), btPosX, btPosY, null);
-        G2D.setFont(new Font("Arial", Font.BOLD, 50));
-        G2D.drawString("Start", getCenterOfButton(btPosX, btPosY).width, getCenterOfButton(btPosX, btPosY).height);
+        clickArray[0] = new clickDaten(btPosX, btPosY, btPosX + btSizeWidth, btPosY + btSizeHeight);
+
+        G2D.setFont(new Font("Arial", Font.BOLD, 51));
+        G2D.drawString("Start", (int) (895/Frame.displayScaleX), (int) (585/Frame.displayScaleY));
+
         G2D.drawImage(Images.MENUBUTTON.image("MenuButton"), btPosX, (btPosY + btSizeHeight) + 2, null);
+        clickArray[1] = new clickDaten(btPosX, btPosY + btSizeHeight + 2, btPosX + btSizeWidth, btPosY + btSizeHeight * 2 +2);
+
         G2D.drawImage(Images.MENUBUTTON.image("MenuButton"), btPosX, (btPosY + (btSizeHeight * 2)) + 4, null);
-
+        clickArray[2] = new clickDaten(btPosX, (btPosY + (btSizeHeight * 2)) + 4, btPosX + btSizeWidth, (btPosY + (btSizeHeight * 3)) + 4);
 
     }
-
-    private Dimension getCenterOfButton(int posX, int posY) {
-        return new Dimension(posX + (btSizeWidth / 2), posY + (btSizeHeight / 2));
-    }
-
 
 
     @Override
@@ -45,17 +48,28 @@ public class MenuScene extends Scene {
         if (isEntered && changeBtSizeHeight == btSizeHeight + 10 && changeBtSizeWidth == btSizeWidth + 10) {
             changeBtSizeHeight++;
             changeBtSizeWidth++;
-        } else if (!isEntered){
+        } else if (!isEntered) {
 
-        };
+        }
+        ;
     }
 
     @Override
     public void handleClick(MouseEvent e) {
 
-        if (e.getX() >= btStartTopLeft.width && e.getX() <= btStartDownRight.width && e.getY() >= btStartTopLeft.height && e.getY() <= btStartDownRight.height) {
-            System.out.print("funkt");
+        if (checkCoordinates(0, e)) {
+            System.out.println("funkt " + 0);
+
             ScenePanel.setActiveScene(new GameScene(30));
+        }
+        if (checkCoordinates(1, e)) {
+            System.out.println("funkt " + 1);
+
+
+        }
+        if (checkCoordinates(2, e)) {
+            System.out.println("funkt " + 2);
+           System.exit(0);
         }
 
 
@@ -64,19 +78,19 @@ public class MenuScene extends Scene {
     @Override
     public void handleOver(MouseEvent e) {
 
-        if (e.getX() >= btStartTopLeft.width && e.getX() <= btStartDownRight.width && e.getY() >= btStartTopLeft.height && e.getY() <= btStartDownRight.height) {
-            System.out.print("button entered");
-            isEntered = true;
-        }
+
     }
 
     @Override
     public void handleExit(MouseEvent e) {
-        if (e.getX() >= btStartTopLeft.width && e.getX() <= btStartDownRight.width && e.getY() >= btStartTopLeft.height && e.getY() <= btStartDownRight.height) {
-            isEntered = false;
-        }
+
     }
 
+    private boolean checkCoordinates(int index, MouseEvent e) {
+        if (e.getX() >= clickArray[index].getTopX() && e.getX() <= clickArray[index].getDownX() && e.getY() >= clickArray[index].getTopY() && e.getY() <= clickArray[index].getDownY())
+            return true;
+        return false;
+    }
 
     public static int getBtSizeWidth() {
         return btSizeWidth;

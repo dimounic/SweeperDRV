@@ -2,8 +2,9 @@ package Scenes;
 
 import Extra.Field;
 import Extra.Images;
+import Extra.clickDaten;
 import Frames.Frame;
-
+import Panel.ScenePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,34 +16,31 @@ import java.util.Random;
 public class GameScene extends Scene {
 
     private int gameBoardSize;
-    private static final int GAME_PANEL_SIZE = Frame.getDisplayHEIGHT();
+    private static final int GAME_PANEL_SIZE = (int) Frame.getDisplayHEIGHT();
     public static int blockSize;
     private int dangerBlocks;
     private Field[][] gameField;
+    private String gameStatus = "";
+    int moveX = (int) (-960 / Frame.displayScaleX);
+    clickDaten[] clickArray;
 
     int localCount1 = 0;
 
     // private standard constructor
     private GameScene() {
-        this.setPreferredSize(new Dimension(GAME_PANEL_SIZE, GAME_PANEL_SIZE));
+        clickArray = new clickDaten[10];
         this.gameBoardSize = 9;
         this.dangerBlocks = 9;
+        setupClickDaten();
 
-
-
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                blockClicked(e);
-            }
-        });
     }
+
 
     // Parameter Constructor
     public GameScene(int size) {
         this();
         this.gameBoardSize = size;
-        this.dangerBlocks = (int) (size*size)/8;
+        this.dangerBlocks = (int) (size * size) / 8;
         blockSize = GAME_PANEL_SIZE / size;
         initialize();
 
@@ -68,24 +66,22 @@ public class GameScene extends Scene {
         int blockX = e.getY() / blockSize;
         int blockY = e.getX() / blockSize;
 
+        if (e.getX() < GAME_PANEL_SIZE && gameStatus.equals("")) {
+            if (e.getButton() == 1 && gameField[blockY][blockX].getBlockType() != "Danger"
+                    && !gameField[blockY][blockX].isFLagged()) {
+                checkForDangerBlocks(e);
+            } else if (e.getButton() == 3)
+                setFlag(blockX, blockY);
+            else if (e.getButton() == 1 && Objects.equals(gameField[blockY][blockX].getBlockType(), "Danger") && !gameField[blockY][blockX].isFLagged()) {
+                gameField[blockY][blockX].setOpen(true);
+                gameStatus = "false";
 
-        if (e.getButton() == 1 && !Objects.equals(gameField[blockY][blockX].getBlockType(), "Danger")
-                && !gameField[blockY][blockX].isFLagged()) {
-            checkForDangerBlocks(e);
-        } else if (e.getButton() == 3)
-            setFlag(blockX, blockY);
-        else if (e.getButton() == 1 && Objects.equals(gameField[blockY][blockX].getBlockType(), "Danger") && !gameField[blockY][blockX].isFLagged()) {
-            gameField[blockY][blockX].setOpen(true);
-            Object[] options = {"Main Menu", "Restart", "Cancel"};
-            JOptionPane.showOptionDialog(this, "play again?", "Game Over", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "yes");
-
+            }
         }
+
         this.repaint();
-        if (localCount1 >= (gameBoardSize*gameBoardSize)-dangerBlocks) {
-            Object[] options = {"Menu",
-                    "Restart",
-                    "Cancel"};
-            int a = JOptionPane.showOptionDialog(this, "play again?", "You've Won", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "yes");
+        if (localCount1 >= (gameBoardSize * gameBoardSize) - dangerBlocks) {
+            gameStatus = "true";
 
         }
 
@@ -119,7 +115,7 @@ public class GameScene extends Scene {
             }
             gameField[x][y].setBlockType(localCount.toString());
             gameField[x][y].setOpen(true);
-            this.localCount1 +=1;
+            this.localCount1 += 1;
 
             if (localCount == 0) {
                 for (int i = x - 1; i < x + 2; i++) {
@@ -133,7 +129,6 @@ public class GameScene extends Scene {
             }
         }
     }
-
 
 
     private void drawBlocks(Graphics2D g) {
@@ -160,11 +155,30 @@ public class GameScene extends Scene {
     @Override
     public void drawScene(Graphics g) {
         drawBlocks((Graphics2D) g);
+        Graphics2D G2D = (Graphics2D) g;
+        if (gameStatus.equals("true")) {
+            //G2D.setColor(Color.GREEN);
+            // G2D.drawRect(moveX,Frame.getDisplayHEIGHT()/2 - 270,960,540);
+           // G2D.drawImage(Images.VICTORY.image(""), moveX, Frame.getDisplayHEIGHT() / 2 - 270, null);
+            G2D.drawImage(Images.VICTORY.image("Sign"), (int) (moveX * Frame.displayScaleX), (int) (270*Frame.displayScaleY), null);
+        } else if (gameStatus.equals("false")) {
+
+
+            // G2D.drawRect(moveX,Frame.getDisplayHEIGHT()/2 - 270,960,540);
+            //G2D.drawImage(Images.DEFEAT.image(""), moveX, Frame.getDisplayHEIGHT() /2 -270, null);
+            G2D.drawImage(Images.DEFEAT.image("Sign"), (int) (moveX / Frame.displayScaleX), (int) (270/Frame.displayScaleY), null);
+            G2D.drawImage(Images.MENUBUTTON.image("button"), (int) ((moveX + 100) / Frame.displayScaleX), (int) (500/Frame.displayScaleY), null);
+           // G2D.drawImage(Images.MENUBUTTON.image(""), moveX, clickArray[0].getTopY(), null);
+
+        }
     }
 
     @Override
     public void cycleScene() {
 
+        if(!gameStatus.equals("") &&moveX < 480/ Frame.displayScaleX){
+            moveX +=(20 / Frame.displayScaleX);
+        }
     }
 
     @Override
@@ -181,4 +195,16 @@ public class GameScene extends Scene {
     public void handleExit(MouseEvent e) {
 
     }
-}
+
+
+    private void setupClickDaten() {
+        int btTopX = (int) ((Frame.getDisplayWIDTH() / 2) - (MenuScene.getChangeBtSizeWidth()));
+        int btTopY = (int) ((Frame.getDisplayHEIGHT() / 2) - (MenuScene.getChangeBtSizeHeight()));
+        int btDownX = btTopX + MenuScene.getBtSizeWidth();
+        int btDownY = btTopY + MenuScene.getChangeBtSizeHeight();
+        clickArray[0] = new clickDaten(btTopX, btTopY, btDownX, btDownY);
+    }
+
+
+
+    }
